@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - CivicConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 80vh;
+            max-width: 600px;
+            margin: 20px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #007bff;
+            color: #fff;
+            padding: 15px;
+        }
+        .chat-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .chat-footer {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f1f1f1;
+            border-top: 1px solid #ccc;
+        }
+        .chat-input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            resize: none;
+        }
+        .btn-icon {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px;
+            margin-left: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn-icon:hover {
+            background: #0056b3;
+        }
+        .file-upload {
+            display: none;
+        }
+        .file-info {
+            font-size: 14px;
+            margin-left: 10px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>AI Assistant</h2>
+        </div>
+        <div class="chat-body" id="chatMessages">
+            <p>Welcome! How can I assist you today?</p>
+        </div>
+        <div class="chat-footer">
+            <input type="file" id="fileUpload" class="file-upload" accept="image/*,application/pdf">
+            <button id="attachButton" class="btn-icon" title="Attach file">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <span id="fileName" class="file-info"></span>
+            <textarea id="messageInput" class="chat-input" placeholder="Type a message..."></textarea>
+            <button id="sendButton" class="btn-icon" title="Send message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('attachButton').addEventListener('click', function() {
+            document.getElementById('fileUpload').click();
+        });
+
+        document.getElementById('fileUpload').addEventListener('change', async function() {
+    const file = this.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    document.getElementById("fileName").textContent = `Uploading: ${file.name}...`;
+
+    try {
+        const response = await fetch("http://127.0.0.1:5000/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+        if (data.summary) {
+            document.getElementById("chatMessages").innerHTML += `<p><strong>Summary:</strong> ${data.summary}</p>`;
+        } else {
+            alert("Error: " + data.error);
+        }
+    } catch (error) {
+        alert("Failed to connect to backend.");
+    }
+});
+    </script>
+</body>
+</html>

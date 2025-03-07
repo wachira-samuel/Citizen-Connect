@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicConnect - Community Engagement Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <!-- <img src="assets/images/logo.svg" alt="CivicConnect Logo"> -->
+                        <span>CivicConnect</span>
+                    </a>
+                </div>
+
+                <nav class="main-nav">
+                    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                        <span class="hamburger-icon">
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                        </span>
+                    </button>
+
+                    <ul class="nav-menu">
+                        <li><a href="index.html" class="active">Home</a></li>
+                        <li><a href="polls.html">Polls</a></li>
+                        <li><a href="incidents.html">Report Incident</a></li>
+                        <li><a href="opinions.html">Public Forum</a></li>
+                        <li><a href="chat.html">AI Assistant</a></li>
+                    </ul>
+                </nav>
+
+                <div class="auth-buttons">
+                    <button id="loginBtn" class="btn btn-outline">Login</button>
+                    <button id="registerBtn" class="btn btn-primary">Register</button>
+                </div>
+
+                <div id="userMenu" class="user-menu hidden">
+                    <button class="user-menu-toggle">
+                        <img src="assets/images/default-avatar.png" alt="User avatar" id="userAvatar">
+                        <span id="userName">User Name</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="profile.html"><i class="fas fa-user"></i> My Profile</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Page content would go here -->
+        <section class="hero">
+            <h1>Welcome to CivicConnect</h1>
+            <p>Empowering communities through civic engagement and transparent governance.</p>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <!-- <img src="assets/images/logo.svg" alt="CivicConnect Logo">
+                    <span>CivicConnect</span> -->
+                </div>
+                <!-- <div class="footer-links"> -->
+                    <!-- <div class="footer-nav">
+                        <h3>Navigation</h3>
+                        <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="polls.html">Polls</a></li>
+                            <li><a href="incidents.html">Report Incident</a></li>
+                            <li><a href="opinions.html">Public Forum</a></li>
+                            <li><a href="chat.html">AI Assistant</a></li>
+                        </ul>
+                    </div> -->
+                    <!-- <div class="footer-legal">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                            <li><a href="accessibility.html">Accessibility</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-contact">
+                        <!-- <h3>Contact</h3>
+                        <ul>
+                            <li><a href="mailto:info@civicconnect.org">info@civicconnect.org</a></li>
+                            <li><a href="tel:+11234567890">+1 (123) 456-7890</a></li>
+                            <li><address>123 Main St, Anytown, USA</address></li>
+                        </ul>
+                    </div> -->
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CivicConnect. All rights reserved.</p>
+                <!-- <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div> -->
+            </div>
+        </div>
+    </footer>
+
+    <script src="navigation.js"></script>
+</body>
+</html>

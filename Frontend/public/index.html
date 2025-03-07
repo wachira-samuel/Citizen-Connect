@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Civic Engagement Platform</title>
+    <link rel="stylesheet" href="../src/assets/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="app-container">
+        <header id="main-header">
+            <div class="logo">
+                <!-- <img src="../src/assets/images/logo.png" alt="Civic Engagement Logo"> -->
+                <h1>CivicConnect</h1>
+            </div>
+            <nav id="main-nav">
+                <ul>
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <!-- <li><a href="polls.html">Polls</a></li>
+                    <li><a href="incidents.html">Report Incident</a></li>
+                    <li><a href="opinions.html">Public Forum</a></li>
+                    <li><a href="chat.html">AI Assistant</a></li> -->
+                </ul>
+            </nav>
+            <!-- <div class="auth-buttons">
+                <button id="loginBtn" class="btn-secondary">Login</button>
+                <button id="registerBtn" class="btn-primary">Register</button>
+                <div id="userMenu" class="user-menu hidden">
+                    <span id="userName">User Name</span>
+                    <button id="logoutBtn" class="btn-text">Logout</button>
+                </div>
+            </div> -->
+        </header>
+
+        <main>
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Empowering Citizens, Building Communities</h1>
+                    <p>Join our platform to participate in local governance, report incidents, share opinions, and make a difference in your community.</p>
+                    <!-- <div class="hero-buttons">
+                        <button id="getStartedBtn" class="btn-primary">Get Started</button>
+                        <button id="learnMoreBtn" class="btn-secondary">Learn More</button>
+                    </div> -->
+                </div>
+                <!-- <div class="hero-image">
+                    <img src="../src/assets/images/hero-image.png" alt="Citizens collaborating">
+                </div> -->
+            </section>
+
+            <section class="features">
+                <h2>How CivicConnect Works</h2>
+                <div class="feature-cards">
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-vote-yea"></i>
+                        </div>
+                        <h3>Participate in Polls</h3>
+                        <p>Vote on important community issues and see real-time results.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h3>Report Incidents</h3>
+                        <p>Report local issues with photos and track their resolution status.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Share Opinions</h3>
+                        <p>Express your thoughts on public matters and engage in civil discussions.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI Assistant</h3>
+                        <p>Get instant answers about civic services and government processes.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <h2>Our Impact</h2>
+                <div class="stat-cards">
+                    <div class="stat-card">
+                        <h3 id="userCount">500+</h3>
+                        <p>Active Citizens</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="pollCount">250+</h3>
+                        <p>Community Polls</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="incidentCount">1,00+</h3>
+                        <p>Issues Resolved</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="opinionCount">500+</h3>
+                        <p>Opinions Shared</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="testimonials">
+                <h2>What Citizens Say</h2>
+                <div class="testimonial-carousel">
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <p>"CivicConnect has transformed how I interact with local government. I reported a broken streetlight and it was fixed within days!"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <!-- <img src="../src/assets/images/testimonial-1.jpg" alt="Sarah Johnson"> -->
+                            <div>
+                                <h4>Sarah Johnson</h4>
+                                <p>Community Member</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial">
+                        <div class="testimonial-content">
+                            <p>"As a government official, this platform helps me understand what citizens really care about and prioritize our resources accordingly."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <!-- <img src="../src/assets/images/testimonial-2.jpg" alt="Michael Rodriguez"> -->
+                            <div>
+                                <h4>Michael Rodriguez</h4>
+                                <p>City Planner</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button id="prevTestimonial"><i class="fas fa-chevron-left"></i></button>
+                    <button id="nextTestimonial"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <!-- <img src="../src/assets/images/logo.png" alt="Civic Engagement Logo"> -->
+                    <h2>CivicConnect</h2>
+                </div>
+                <div class="footer-links">
+                    <!-- <div class="footer-section">
+                        <h3>Platform</h3>
+                        <ul>
+                            <li><a href="polls.html">Polls</a></li>
+                            <li><a href="incidents.html">Incidents</a></li>
+                            <li><a href="opinions.html">Opinions</a></li>
+                            <li><a href="chat.html">AI Assistant</a></li>
+                        </ul>
+                    </div> -->
+                    <div class="footer-section">
+                        <!-- <h3>Resources</h3>
+                        <ul>
+                            <li><a href="#">User Guide</a></li>
+                            <li><a href="#">FAQ</a></li>
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                        </ul> -->
+                    </div>
+                    <div class="footer-section">
+                        <!-- <h3>Contact</h3>
+                        <ul>
+                            <li><a href="mailto:support@civicconnect.com">support@civicconnect.com</a></li>
+                            <li><a href="tel:+1234567890">+1 (234) 567-890</a></li>
+                            <li><a href="#">123 City Hall Ave, Suite 101</a></li>
+                            <li><a href="#">Anytown, ST 12345</a></li>
+                        </ul> -->
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CivicConnect. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal templates -->
+    <div id="loginModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Login to Your Account</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginRole">Role</label>
+                    <select id="loginRole" name="role" required>
+                        <option value="citizen">Citizen</option>
+                        <option value="govt_official">Government Official</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Login</button>
+                </div>
+                <div class="form-links">
+                    <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+                    <a href="#" id="registerLink">Don't have an account? Register</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="registerModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Create an Account</h2>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="registerName">Full Name</label>
+                    <input type="text" id="registerName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirm Password</label>
+                    <input type="password" id="registerConfirmPassword" name="confirmPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerRole">Role</label>
+                    <select id="registerRole" name="role" required>
+                        <option value="citizen">Citizen</option>
+                        <option value="govt_official">Government Official</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Register</button>
+                </div>
+                <div class="form-links">
+                    <a href="#" id="loginLink">Already have an account? Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="messageContainer" class="message-container"></div>
+
+    <script src="../src/assets/js/app.js"></script>
+</body>
+</html>

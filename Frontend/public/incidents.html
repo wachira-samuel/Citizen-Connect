@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report Incident - CivicConnect</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places"></script>
+    <style>
+        /* Incident-specific styles */
+        .page-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+        }
+
+        @media (min-width: 992px) {
+            .page-content {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .incidents-section {
+            background-color: var(--background-color);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 2px 10px var(--shadow-color);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .incidents-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .incidents-header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .incidents-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            color: var(--text-light);
+        }
+
+        .incidents-loading i {
+            margin-right: 10px;
+        }
+
+        .incidents-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media (min-width: 768px) {
+            .incidents-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .incident-card {
+            border-radius: var(--radius-md);
+            border-left: 4px solid var(--border-color);
+            background-color: var(--background-light);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .incident-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        .incident-card.status-new {
+            border-left-color: var(--primary-color);
+        }
+
+        .incident-card.status-progress {
+            border-left-color: var(--info-color);
+        }
+
+        .incident-card.status-review {
+            border-left-color: var(--warning-color);
+        }
+
+        .incident-card.status-resolved {
+            border-left-color: var(--success-color);
+        }
+
+        .incident-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        .incident-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .incident-status {
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 600;
+            background-color: var(--background-color);
+        }
+
+        .status-new .incident-status {
+            background-color: var(--primary-light);
+            color: white;
+        }
+
+        .status-progress .incident-status {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+        .status-review .incident-status {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .status-resolved .incident-status {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .incident-body {
+            padding: 15px;
+        }
+
+        .incident-body p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .incident-body i {
+            width: 16px;
+            text-align: center;
+            margin-right: 8px;
+            color: var(--text-light);
+        }
+
+        .incident-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding: 10px 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-text {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: var(--transition);
+            font-size: 14px;
+        }
+
+        .btn-text:hover {
+            background-color: var(--primary-light);
+            color: white;
+            border-radius: var(--radius-sm);
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        /* Map styles */
+        .map-container {
+            height: 400px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .map-info-window {
+            padding: 5px;
+            max-width: 250px;
+        }
+
+        .map-info-window h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+
+        .map-info-window p {
+            margin: 3px 0;
+            font-size: 14px;
+        }
+
+        .map-info-window button {
+            margin-top: 10px;
+        }
+
+        /* Filter styles */
+        .filter-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: var(--background-light);
+            border-radius: var(--radius-md);
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+        }
+
+        .filter-actions {
+            display: flex;
+            align-items: flex-end;
+            gap: 10px;
+        }
+
+        /* Modal styles for incident reporting */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: var(--background-color);
+            border-radius: var(--radius-lg);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+
+        .incident-modal {
+            max-width: 800px;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--danger-color);
+        }
+
+        .modal-content h2 {
+            margin: 0 0 20px 0;
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-body {
+            padding: 0 20px 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 16px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group .input-with-button {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-group .input-with-button input {
+            flex: 1;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .photo-upload-container {
+            margin-bottom: 20px;
+        }
+
+        .photo-upload-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .photo-upload-label:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(44, 110, 203, 0.05);
+        }
+
+        .photo-upload-label i {
+            font-size: 24px;
+            color: var(--primary-color);
+        }
+
+        .photo-upload-label span {
+            flex: 1;
+        }
+
+        .photo-upload-input {
+            display: none;
+        }
+
+        .photo-preview {
+            margin-top: 15px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .photo-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .photo-preview .btn-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            color: var(--danger-color);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .photo-preview .btn-icon:hover {
+            background-color: white;
+            transform: scale(1.1);
+        }
+
+        /* Incident details styles */
+        .incident-details {
+            padding: 20px;
+        }
+
+        .incident-details-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin: -20px -20px 20px;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            background-color: var(--background-light);
+        }
+
+        .incident-details-header h2 {
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-size: 24px;
+        }
+
+        .incident-details-body {
+            margin-bottom: 30px;
+        }
+
+        .incident-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 15px;
+            background-color: var(--background-light);
+            border-radius: var(--radius-md);
+        }
+
+        .incident-info p {
+            margin: 0;
+        }
+
+        .incident-description {
+            margin-bottom: 30px;
+        }
+
+        .incident-description h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .incident-photo {
+            margin-bottom: 30px;
+        }
+
+        .incident-photo h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .incident-photo img {
+            max-width: 100%;
+            border-radius: var(--radius-md);
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .incident-updates {
+            margin-bottom: 30px;
+        }
+
+        .incident-updates h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .updates-timeline {
+            list-style: none;
+            padding: 0;
+            position: relative;
+        }
+
+        .updates-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 16px;
+            width: 2px;
+            background-color: var(--border-color);
+        }
+
+        .update-item {
+            position: relative;
+            padding-left: 45px;
+            margin-bottom: 20px;
+        }
+
+        .update-item::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 2px solid white;
+        }
+
+        .update-date {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+
+        .update-content {
+            background-color: var(--background-light);
+            padding: 15px;
+            border-radius: var(--radius-md);
+        }
+
+        .update-status {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .update-author {
+            font-size: 14px;
+            color: var(--text-light);
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .incident-details-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="index.html">
+                        <!-- <img src="assets/images/logo.svg" alt="CivicConnect Logo"> -->
+                        <span>CivicConnect</span>
+                    </a>
+                </div>
+
+                <nav class="main-nav">
+                    <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                        <span class="hamburger-icon">
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                            <span class="bar"></span>
+                        </span>
+                    </button>
+
+                    <ul class="nav-menu">
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="polls.html">Polls</a></li>
+                        <li><a href="incidents.html" class="active">Report Incident</a></li>
+                        <li><a href="opinions.html">Public Forum</a></li>
+                        <li><a href="chat.html">AI Assistant</a></li>
+                    </ul>
+                </nav>
+
+                <div class="auth-buttons">
+                    <button id="loginBtn" class="btn btn-outline">Login</button>
+                    <button id="registerBtn" class="btn btn-primary">Register</button>
+                </div>
+
+                <div id="userMenu" class="user-menu hidden">
+                    <button class="user-menu-toggle">
+                        <!-- <img src="assets/images/default-avatar.png" alt="User avatar" id="userAvatar"> -->
+                        <span id="userName">User Name</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="profile.html"><i class="fas fa-user"></i> My Profile</a></li>
+                        <li><a href="settings.html"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="page-header">
+            <h1>Report Incidents</h1>
+            <p>Report and track community issues that need attention from local authorities.</p>
+            <button id="openReportFormBtn" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Report New Incident
+            </button>
+        </section>
+
+        <!-- <section class="map-container">
+            <div id="incidentMap" style="width: 100%; height: 100%;"></div>
+        </section> -->
+
+        <section class="incidents-section">
+            <div class="incidents-header">
+                <h2>Filter Incidents</h2>
+            </div>
+            <form id="incidentFilters" class="filter-form">
+                <div class="filter-group">
+                    <label for="filterCategory">Category</label>
+                    <select id="filterCategory">
+                        <option value="all">All Categories</option>
+                        <option value="Infrastructure">Infrastructure</option>
+                        <option value="Public Safety">Public Safety</option>
+                        <option value="Environment">Environment</option>
+                        <option value="Traffic">Traffic</option>
+                        <option value="Noise">Noise</option>
+                        <!-- <option value="Sanitation">Sanitation</option> -->
+                        <!-- <option value="Public Utilities">Public Utilities</option> -->
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterStatus">Status</label>
+                    <select id="filterStatus">
+                        <option value="all">All Statuses</option>
+                        <option value="New">New</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Under Review">Under Review</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterDate">Date</label>
+                    <input type="date" id="filterDate">
+                </div>
+                <div class="filter-group">
+                    <!-- <label for="filterPriority">Priority</label>
+                    <select id="filterPriority">
+                        <option value="all">All Priorities</option>
+                        <option value="Low">Low</option>
+                        <option value="Medium">Medium</option>
+                        <option value="High">High</option>
+                        <option value="Critical">Critical</option>
+                    </select> -->
+                </div>
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <button type="reset" class="btn">Reset</button>
+                </div>
+            </form>
+        </section>
+
+        <div class="page-content">
+            <section class="incidents-section">
+                <div class="incidents-header">
+                    <h2>My Reported Incidents</h2>
+                </div>
+                <div class="incidents-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading your incidents...
+                </div>
+                <div id="userIncidentsList"></div>
+            </section>
+
+            <section class="incidents-section">
+                <div class="incidents-header">
+                    <h2>Incidents Near Me</h2>
+                </div>
+                <div class="incidents-loading">
+                    <i class="fas fa-spinner fa-spin"></i> Loading nearby incidents...
+                </div>
+                <div id="nearbyIncidentsList"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Report Incident Modal -->
+    <div id="reportIncidentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Report an Incident</h2>
+            <div class="modal-body">
+                <form id="reportIncidentForm">
+                    <div class="form-group">
+                        <label for="incidentTitle">Title</label>
+                        <input type="text" id="incidentTitle" required placeholder="Brief description of the issue">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="incidentCategory">Category</label>
+                        <select id="incidentCategory" required>
+                            <option value="" disabled selected>Select Category</option>
+                            <!-- Categories will be populated by JavaScript -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="incidentDescription">Description</label>
+                        <textarea id="incidentDescription" required placeholder="Provide details about the incident"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="incidentLocation">Location</label>
+                        <div class="input-with-button">
+                            <input type="text" id="incidentLocation" required placeholder="Address or location description">
+                            <button type="button" id="useLocationBtn" class="btn">
+                                <i class="fas fa-map-marker-alt"></i> Use My Location
+                            </button>
+                        </div>
+                        <input type="hidden" id="incidentCoordinates">
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <label for="incidentPriority">Priority</label>
+                        <select id="incidentPriority" required>
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div> -->
+
+                    <div class="form-group">
+                        <label>Photo (Optional)</label>
+                        <label for="incidentPhoto" class="photo-upload-label">
+                            <i class="fas fa-camera"></i>
+                            <span>Click to upload a photo</span>
+                        </label>
+                        <input type="file" id="incidentPhoto" class="photo-upload-input" accept="image/*">
+                        <div id="photoPreview"></div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit Report</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <!-- <div class="container">
+            <!-- <div class="footer-content">
+                <div class="footer-logo">
+                    <!-- <img src="assets/images/logo.svg" alt="CivicConnect Logo"> -->
+                    <!-- <span>CivicConnect</span> -->
+                <!-- </div>
+                <div class="footer-links">
+                    <div class="footer-nav">
+                        <h3>Navigation</h3> -->
+                        <!-- <ul>
+                            <li><a href="index.html">Home</a></li>
+                            <li><a href="polls.html">Polls</a></li>
+                            <li><a href="incidents.html">Report Incident</a></li>
+                            <li><a href="opinions.html">Public Forum</a></li>
+                            <li><a href="chat.html">AI Assistant</a></li>
+                        </ul> -->
+                    <!-- </div> -->
+                    <!-- <div class="footer-legal">
+                        <h3>Legal</h3>
+                        <ul>
+                            <li><a href="privacy.html">Privacy Policy</a></li>
+                            <li><a href="terms.html">Terms of Service</a></li>
+                            <li><a href="accessibility.html">Accessibility</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-contact"> -->
+                        <!-- <h3>Contact</h3>
+                        <ul>
+                            <li><a href="mailto:info@civicconnect.org">info@civicconnect.org</a></li>
+                            <li><a href="tel:+11234567890">+1 (123) 456-7890</a></li>
+                            <li><address>123 Main St, Anytown, USA</address></li>
+                        </ul>
+                    </div> -->
+                </div> -->
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CivicConnect. All rights reserved.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="navigation.js"></script>
+    <script src="../src/assets/js/chat.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize incidents functionality
+            initializeIncidents();
+
+            // Modal functionality
+            const modal = document.getElementById('reportIncidentModal');
+            const openModalBtn = document.getElementById('openReportFormBtn');
+            const closeModalBtn = document.querySelector('.close-modal');
+            const cancelBtn = document.querySelector('[data-dismiss="modal"]');
+
+            openModalBtn.addEventListener('click', function() {
+                modal.classList.add('show');
+            });
+
+            function closeModal() {
+                modal.classList.remove('show');
+            }
+
+            closeModalBtn.addEventListener('click', closeModal);
+            cancelBtn.addEventListener('click', closeModal);
+
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+
+            // App object for global functionality
+            window.App = window.App || {};
+            window.App.showModal = function(modalId) {
+                document.getElementById(modalId).classList.add('show');
+            };
+            window.App.hideModal = function(modalId) {
+                document.getElementById(modalId).classList.remove('show');
+            };
+            window.App.showMessage = function(message, type) {
+                // Simple alert for now, could be replaced with a toast notification
+                alert(message);
+            };
+            window.App.state = {
+                currentUser: {
+                    id: 'user123', // Placeholder, would be set by authentication system
+                    role: 'user' // Placeholder role
+                }
+            };
+
+            // Auth object for authenticated requests
+            window.Auth = window.Auth || {};
+            window.Auth.authenticatedFetch = async function(url, options = {}) {
+                // This would normally add authentication headers
+                // For demo purposes, just pass through to fetch
+                return fetch(url, options);
+            };
+        });
+    </script>
+</body>
+</html>
